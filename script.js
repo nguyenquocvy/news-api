@@ -11,7 +11,7 @@ function closeSearch() {
 function showApi() {
     //hiển thị biểu tượng loading
     document.getElementById("spinner").removeAttribute("hidden");
-    fetch("https://gnews.io/api/v4/top-headlines?&token=bd0c327c97e0a7a97f678b4d5fbef476")
+    fetch("https://gnews.io/api/v4/top-headlines?&token=bd0c327c97e0a7a97f678b4d5fbef476&lang=en")
         .then(result => result.json())
         .then(data => {
             //console.log(data.articles);
@@ -43,7 +43,7 @@ function search() {
     } else {
         //hiển thị biểu tượng loading
         document.getElementById("spinner").removeAttribute("hidden");
-        fetch("https://gnews.io/api/v4/search?q=" + keyword + "&token=bd0c327c97e0a7a97f678b4d5fbef476")
+        fetch("https://gnews.io/api/v4/search?q=" + keyword + "&token=bd0c327c97e0a7a97f678b4d5fbef476&lang=en")
             .then(result => result.json())
             .then(data => {
                 //console.log(data);
