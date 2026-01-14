@@ -1,52 +1,164 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quoc Vy</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tính tuổi bé</title>
 
-    <!--Nhúng JS vào html-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script language="javascript" src="script.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
 
-    <!--Nhúng css vào html-->
-    <link rel="stylesheet" href="style.css">
+<style>
+    body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+        background: linear-gradient(135deg, #6dd5fa, #ffffff);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card {
+        background: #fff;
+        width: 90%;
+        max-width: 360px;
+        padding: 22px 20px 26px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.12);
+        text-align: center;
+    }
+
+    h2 {
+        margin: 0 0 15px;
+        color: #2196f3;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 6px;
+        text-align: left;
+    }
+
+    input {
+        width: 85%;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #2196f3;
+    }
+
+    button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 14px;
+        font-size: 17px;
+        border: none;
+        border-radius: 12px;
+        background: #2196f3;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    button:active {
+        transform: scale(0.98);
+    }
+
+    .result {
+        margin-top: 18px;
+        background: #f1f8ff;
+        padding: 14px;
+        border-radius: 12px;
+        font-size: 17px;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    .age-big {
+        font-size: 22px;
+        color: #1976d2;
+        font-weight: bold;
+    }
+</style>
 </head>
 
-<body style="background-color:oldlace;">
+<body>
 
-    <!--SEARCH-->
-    <div id="myOverlay" class="overlay">
-        <span class="closebtn" onclick="closeSearch()" title="Close Overlay">×</span>
-        <div class="overlay-content">
-            <input id="keywords" type="text" placeholder="Search...." name="search"
-                style="border: 1px solid cornflowerblue">
-            <button onclick="search()" type="submit" style="border: 1px solid cornflowerblue;"><i class="fa fa-search"
-                    style="color: cornflowerblue; font-size: 130%;"></i></button>
-        </div>
-    </div>
+<div class="card">
+    <h2>👶 Tính tuổi của bé</h2>
 
-    <div style="width: 100%; background-color: cadetblue; margin-top: 1%; border: 2px solid cornflowerblue;">
-        <div style="text-align: center;">
-            <button class="openBtn" onclick="openSearch()"><b>My
-                    News <i class="fa fa-search"></i></b></button>
-        </div>
-    </div>
+    <label>Ngày sinh</label>
+    <!-- đổi type=date → text để dùng lịch Flatpickr -->
+    <input type="text" id="birthDate" placeholder="Chọn ngày sinh">
 
-    <!--Show API-->
-    <div hidden id="spinner"></div>
+    <button onclick="calculateDetailAge()">Tính tuổi</button>
 
-    <div class="container-fluid">
-        <div id="body" class="row">
+    <div class="result" id="result"></div>
+</div>
 
-        </div>
-    </div>
+<script>
+// ====== KÍCH HOẠT LỊCH TIẾNG VIỆT ======
+flatpickr("#birthDate", {
+    locale: "vn",
+    dateFormat: "Y-m-d",     // để JS đọc đúng
+    altInput: true,
+    altFormat: "d/m/Y",     // hiển thị đẹp cho người dùng
+    defaultDate: "2025-10-11"
+});
+
+function calculateDetailAge() {
+    const birthInput = document.getElementById("birthDate").value;
+    const resultEl = document.getElementById("result");
+
+    if (!birthInput) {
+        resultEl.innerText = "Vui lòng chọn ngày sinh.";
+        return;
+    }
+
+    const birthDate = new Date(birthInput);
+    const today = new Date();
+
+    if (today < birthDate) {
+        resultEl.innerText = "Ngày hiện tại phải sau ngày sinh.";
+        return;
+    }
+
+    // ==== TÍNH SỐ THÁNG ====
+    let months =
+        (today.getFullYear() - birthDate.getFullYear()) * 12 +
+        (today.getMonth() - birthDate.getMonth());
+
+    if (today.getDate() < birthDate.getDate()) {
+        months--;
+    }
+
+    // ==== TÍNH NGÀY DƯ ====
+    let tempDate = new Date(birthDate);
+    tempDate.setMonth(tempDate.getMonth() + months);
+
+    let diffDays = Math.floor((today - tempDate) / (1000 * 60 * 60 * 24));
+
+    // ==== ĐỔI → TUẦN + NGÀY ====
+    let weeks = Math.floor(diffDays / 7);
+    let days  = diffDays % 7;
+
+    resultEl.innerHTML =
+        `<div class="age-big">${months} tháng</div>
+         <div>${weeks} tuần, ${days} ngày</div>`;
+}
+
+// Tự động tính khi mở trang
+calculateDetailAge();
+</script>
 
 </body>
-
 </html>
